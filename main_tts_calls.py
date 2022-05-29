@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 import gcp_tts_calls
 from __main__ import app
 
-f=open('name-pronounciation-tool-76680a77203d.json')
+f=open('name-pronounciation-tool-5503148f02ce.json')
 cred = json.load(f)
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(cred)
 
