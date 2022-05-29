@@ -1,0 +1,106 @@
+<html>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<link rel="icon" type="image/x-icon" href="{{ url_for('static',filename='img/favicon.ico') }}">
+<link href="{{ url_for('static', filename='css/bootstrap.min.united.css') }}" rel="stylesheet">
+<link href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" rel="stylesheet">
+<link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+<title>Name Pronunciation Tool</title>
+<body>
+<nav class="navbar navbar-inverse"
+     style="background-color: #d3171f;border-bottom-width: 5px; border-bottom-color: #f6d604">
+    <div class="container container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/" style="font-family: georgia-serif; font-size: 40px">WELLS FARGO</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                {% if session.get("current_user", None) %}
+                <li><a href="{{ url_for('func_root') }}">Home</a></li>
+                <li><a href="{{ url_for('func_user') }}">Profile</a></li>
+                {% endif%}
+                {% if session.get("current_user", None) and session.get("current_user").lower() == "admin" %}
+                <li><a href="{{ url_for('func_admin') }}">Console</a></li>
+                {% endif %}
+                {% if not session.get("current_user", None) %}
+                <form action="/login" class="navbar-form navbar-right" method="post">
+                    <div class="form-group">
+                        <input class="form-control" name="id" placeholder="User Name" type="text">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" name="pw" placeholder="Password" type="password">
+                    </div>
+                    <button class="btn btn-outline-light" style="background-color: #e05d62" type="submit">Log In
+                    </button>
+                </form>
+                {% else %}
+                <li style="padding-left: 25px;">
+                    <a><b>{{ session.get("current_user") }}</b></a></li>
+                <li><a href="{{ url_for('func_logout') }}"><b><u>Logout</u></b></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="alert alert-{{ category }}">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container" style="text-align: center">
+
+    <h1>{% block logo %}{% endblock %}</h1>
+    {% if session.get("current_user", None) %}
+    <h1>{% block page_title %}{% endblock %}</h1>
+    <p>{% block body %}{% endblock %}</p>
+    {% endif %}
+
+</div>
+
+<div class="footer navbar-fixed-bottom">
+    <div style="background-color: #f7f7f7">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3" style="text-align: left">
+                    <p class="pull-left" style="margin: 5px">
+                        <img src="{{ url_for('static', filename='img/stagecoach.png') }}" width="170px">
+
+                    </p>
+                </div>
+                <div class="col-lg-6" style="text-align: center">
+                    <p style="margin: 8px; font-size: 10px">
+                        Home | Contact India & Philipines | Teamworks Policies | Sites A-Z | Report inappropriate Use
+                        <br>
+                        © 2022 Wells Fargo. Teamworks and its content are for the express use of internal purposes.
+                    </p></div>
+                <!--            <p style="margin: 5px">-->
+                <!--                <img src="{{ url_for('static', filename='img/stagecoach.png') }}" width="200px">-->
+
+                <!--</p>-->
+                <div class="col-lg-3" style="text-align: right">
+                    <p class="pull-right" style="margin: 8px; font-size: 10px">
+                        Deep Cadence
+                        <br>
+                        Wells Fargo Global Technology Hackathon 2022
+                    </p></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

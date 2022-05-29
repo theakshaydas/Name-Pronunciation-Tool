@@ -1,0 +1,281 @@
+.btn-outline-danger {
+    border: 1px solid #df382c;
+}
+
+.animated-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    line-height: 80px;
+    display: inline-block;
+    text-align: center;
+    background: #ff3f3f;
+    position: relative;
+}
+
+.animated-btn::before, .animated-btn::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 50%;
+    background: rgba(255, 63, 63, 0.8);
+    animation: ripple-1 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+.animated-btn::after {
+    background: rgba(255, 63, 63, 0.6);
+    animation: ripple-2 2s infinite ease-in-out;
+    animation-delay: 0.5s;
+}
+
+@keyframes ripple-1 {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes ripple-2 {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.7);
+        opacity: 0;
+    }
+}
+
+.video-play-button {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    left: 61%;
+    transform: translateX(-50%) translateY(-50%);
+    box-sizing: content-box;
+    display: block;
+    width: 15px;
+    height: 12px;
+    background: #b50201;
+    border-radius: 50%;
+    padding: 9px 24px 18px 28px;
+}
+.video-play-button:before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: block;
+    width: 75px;
+    height: 75px;
+    background: #b50201;
+    border-radius: 50%;
+    animation: pulse-border 1500ms ease-out infinite;
+}
+
+.video-play-button:after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: block;
+    width: 70px;
+    height: 70px;
+    background: #b50201;
+    border-radius: 50%;
+    transition: all 200ms;
+    border: solid 4px #fff;
+}
+
+
+.video-play-button span {
+    display: block;
+    position: relative;
+    z-index: 3;
+    width: 0;
+    height: 0;
+    border-left: 18px solid #fff;
+    border-top: 10px solid transparent;
+    border-bottom: 12px solid transparent;
+}
+
+@keyframes pulse-border {
+  0% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1.5);
+    opacity: 0;
+  }
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    background: red;
+    height:4px;
+    border-radius: 50px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  background: #d41f2a;
+  height: 15px;
+  width: 15px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.btn-sm {
+    width: 150px;
+}
+
+/*
+audio::-webkit-media-controls-panel
+audio::-webkit-media-controls-mute-button
+audio::-webkit-media-controls-play-button
+audio::-webkit-media-controls-timeline-container
+audio::-webkit-media-controls-current-time-display
+audio::-webkit-media-controls-time-remaining-display
+audio::-webkit-media-controls-timeline
+audio::-webkit-media-controls-volume-slider-container
+audio::-webkit-media-controls-volume-slider
+audio::-webkit-media-controls-seek-back-button
+audio::-webkit-media-controls-seek-forward-button
+audio::-webkit-media-controls-fullscreen-button
+audio::-webkit-media-controls-rewind-button
+audio::-webkit-media-controls-return-to-realtime-button
+audio::-webkit-media-controls-toggle-closed-captions-button
+*/
+
+audio.in-grid {
+    filter: sepia(50%) saturate(18%) grayscale(1) contrast(90%) invert(1%);
+    width: 150px;
+    height: 25px;
+}
+
+audio.in-grid::-webkit-media-controls-current-time-display,
+audio.in-grid::-webkit-media-controls-time-remaining-display,
+audio.in-grid::-webkit-media-controls-timeline {
+  display: none;
+}
+
+audio.out-grid {
+    filter: sepia(50%) saturate(90%) grayscale(1) contrast(50%) invert(10%);
+}
+
+audio.out-grid1 {
+    filter: sepia(50%) saturate(18%) grayscale(1) contrast(50%) invert(1%);
+    width: 100%;
+    height: 30px;
+}
+
+.card {
+  background: #fffafa;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  border-radius: 5px;
+  margin: 20px;
+  padding: 20px;
+  text-align: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 150px;
+  height: 30px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #2196F3;
+  -webkit-transition: .4s;
+  transition: .4s;
+   border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #ca2222;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(120px);
+}
+
+/*------ ADDED CSS ---------*/
+.slider:after
+{
+ content:'Record';
+ color: white;
+ display: block;
+ position: absolute;
+ transform: translate(-50%,-50%);
+ top: 50%;
+ left: 50%;
+ font-size: 10px;
+ font-family: Verdana, sans-serif;
+}
+
+input:checked + .slider:after
+{
+  content:'Stop';
+}
+
+#namelbl audio {
+    filter: sepia(50%) saturate(18%) grayscale(1) contrast(90%) invert(1%);
+    width: 100px;
+    height: 25px;
+}
+
+#namelbl audio::-webkit-media-controls-mute-button,
+#namelbl audio::-webkit-media-controls-timeline-container,
+#namelbl audio::-webkit-media-controls-current-time-display,
+#namelbl audio::-webkit-media-controls-time-remaining-display,
+#namelbl audio::-webkit-media-controls-timeline,
+#namelbl audio::-webkit-media-controls-volume-slider-container,
+#namelbl audio::-webkit-media-controls-volume-slider,
+#namelbl audio::-webkit-media-controls-current-time-display,
+#namelbl audio::-webkit-media-controls-time-remaining-display,
+#namelbl audio::-webkit-media-controls-timeline {
+  display: none;
+}

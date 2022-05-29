@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block page_title %}{% endblock %}
+
+{% block logo %}
+<div class="container" style="text-align: center; padding-top: 50px">
+    <img src="{{ url_for('static', filename='img/toollogo.jpg') }}" width="40%">
+</div>
+{% endblock %}
+
+{% block body %}
+{{ super() }}
+
+<div class="container" style="text-align: center">
+    <form action="/user_lookup" method='post'>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="input-group input-group-sm" style="box-shadow: 0 0 10px rgba(0,0,0,0.4)">
+                    <input class="form-control" name="id"
+                           placeholder="enter name or email id to find/play pronunciation"
+                           type="text">
+                    <span class="input-group-btn">
+                        <button class="btn bg-transparent" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+    </form>
+
+    {% if users %}
+    <br>
+    {% if is_emp %}
+    <table class="table small"
+           style="width: 80%; margin: 0 auto; box-shadow: 0 0 50px rgba(0,0,0,0.1); border-radius: 5px;">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email Id</th>
+            <th>Preferred Name</th>
+            <th class="text-center">Pronunciation</th>
+            {% if session.get("current_user").lower() == "admin" %}
+            <th class="text-center">Embedded URL</th>
+            <th class="text-center">Delete Saved Preferences</th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for number, user, rec, act in users %}
+        <tr style="box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 10%)">
+            <th> {{ number }}</th>
+            <td> {{ user.name }}</td>
+            <td> {{ user.email_id }}</td>
+            <td> {{ user.preferred_name }}</td>
+            <td class="text-center">
+                <audio class="in-grid" controls src="{{rec}}"></audio>
+            </td>
+            {% if session.get("current_user").lower() == "admin" %}
+            <td class="text-center">
+                <a id="myTooltip" onclick="copyToClipboard(this)" style="margin: 7px 10px"
+                   title="&lt;audio controls src=&quot;{{rec}}&quot;&gt;&lt;/audio&gt;"><span
+                        class="fas fa-copy fa-lg"></span></a>
+            </td>
+            <td class="text-center">
+                {% if act %}
+                <a href="{{act}}" style="margin: 7px 10px"><span class="fas fa-trash fa-lg"
+                                                                 title="Remove non-standard recording"></span></a>
+                {% else %}
+                <i class="fas fa-ban fa-lg" title="Non-standard recording not saved"></i>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+
+        {% endfor %}
+    </table>
+    {% else %}
+    <h4>Couldn't find an employee deails with name: {{users}}
+        <span>
+            <a id="myTooltip1" onclick="copyToClipboard(this)" style="margin: 7px 10px"
+               title="&lt;audio autoplay class=&quot;out-grid&quot; controls
+               src=&quot;/api/standard/pronounce?name='{{users}}'&quot;&gt;&lt;/audio&gt;"><span
+                    class="fas fa-copy fa-lg"></span></a>
+        </span>
+    </h4>
+    <br>
+    <audio autoplay class="out-grid" controls
+           src="/api/standard/pronounce?name='{{users}}'"></audio>
+    {% endif %}
+    {% endif %}
+</div>
+
+
+{% endblock %}

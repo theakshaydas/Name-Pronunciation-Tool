@@ -1,0 +1,246 @@
+{% extends "layout.html" %}
+{% block page_title %}{% endblock %}
+
+{% block logo %}
+<div class="container" style="text-align: center">
+    <img src="{{ url_for('static', filename='img/toollogo.jpg') }}" width="25%">
+</div>
+{% endblock %}
+
+{% block body %}
+{{ super() }}
+
+<div class="container">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a data-toggle="tab" href="#user">User Maintenance</a></li>
+        <li><a data-toggle="tab" href="#fireworks">Fire Works</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="user">
+            <div class="row">
+
+                <div class="col-lg-5">
+                    <h3>Add Account</h3>
+                    <br>
+                    <form action="/add_user" class="form-inline" method='post'>
+                        <div class="row">
+                            <div class="col-sm-6 text-right">
+                                <div class="form-group">
+                                    <label>Name :</label><br>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-left">
+                                <div class="form-group">
+                                    <input class="form-control" name="id"
+                                           style="height: 30px; box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 30%)"
+                                           type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6 text-right">
+                                <div class="form-group">
+                                    <label>Password :</label><br>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-left">
+                                <div class="form-group">
+                                    <input class="form-control" name="pw"
+                                           style="height: 30px; box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 30%)"
+                                           type="password">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6 text-right">
+                                <div class="form-group">
+                                    <label>Email :</label><br>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-left">
+                                <div class="form-group">
+                                    <input class="form-control" name="email"
+                                           style="height: 30px; box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 30%)"
+                                           type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row text-center">
+                            <br>
+                            <button class="btn btn-sm btn-danger" style="box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 30%)"
+                                    type="submit">Submit&nbsp;&nbsp;&nbsp;
+                                <span class="fa fa-paper-plane"></span></button>
+                        </div>
+                    </form>
+                    <br><br><br>
+                    {# only invoked when failed adding new ID due to duplication #}
+                    {% if is_success %}
+                    <div class="alert alert-dismissible alert-success">
+                        <button class="close" data-dismiss="alert" type="button">&times;</button>
+                        <strong>Success!</strong> User added successfully
+                    </div>
+                    {% endif %}
+                    {# only invoked when failed adding new ID due to duplication #}
+                    {% if id_to_add_is_duplicated %}
+                    <div class="alert alert-dismissible alert-danger">
+                        <button class="close" data-dismiss="alert" type="button">&times;</button>
+                        <strong>Error!</strong> The emailid already exists.
+                    </div>
+                    {% endif %}
+                    {# only invoked when failed adding new ID due to invalid character #}
+                    {% if id_to_add_is_invalid %}
+                    <div class="alert alert-dismissible alert-warning">
+                        <button class="close" data-dismiss="alert" type="button">&times;</button>
+                        <strong>Warning!</strong> The account name is invalid.
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-7">
+                    <h3>Manage Existing Accounts</h3>
+                    <div style="height: 490px; overflow: auto;">
+                        <table class="table small">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email Id</th>
+                                <th>Alias</th>
+                                <th>Audio</th>
+                                <th>Password</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            {% for number, user, act in users %}
+                            <tr style="box-shadow: 0px 2px 5px 0px rgb(0 0 0 / 10%)">
+                                <th> {{ number }}</th>
+                                <td> {{ user.name }}</td>
+                                <td> {{ user.email_id }}</td>
+                                <td> {{ user.preferred_name }}</td>
+                                <td> {{ user.audio }}</td>
+                                <td> {{ user.password }}</td>
+                                <td class="text-center"><a href={{act}}><span class="fa fa-trash"></span></a></td>
+                            </tr>
+
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="tab-pane fade text-left" id="fireworks">
+            <br>
+            <div class="row">
+                <div class="col-lg-2" style="padding-top: 20px">
+                    <span aria-hidden="true" class="fa fa-user fa-10x" id="userprofilecard"
+                          style="display: inline-block;
+                          padding: 20px;
+                          width: 168px;
+                          height: 183px;
+                          text-align: center;
+                          box-shadow: 0 0 50px rgba(0,0,0,0.3);
+                          border-radius: 5px;"></span>
+                </div>
+                <div class="col-lg-5">
+                    <ul style="list-style-type:none;">
+                        <li><h2>Elon Musk</h2></li>
+                        <li>
+                            <div class="row">
+                                <div class="col-sm-4"><b>Legal Name</b></div>
+                                <div class="col-sm-1">:</div>
+                                <div class="col-sm-7">
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div id="namelbl" style="display: block">Elon Reeve Musk</div>
+                                            <input class="text-center" id="nametxt" style="display: none" type="text"
+                                                   value="Elon Reeve Musk">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <a id="nameedit" onclick="addSaveEmbeddedUrl()"
+                                               style="margin: 7px 10px; display: block"><span
+                                                    class="fas fa-edit fa-sm"></span></a>
+                                            <a id="namecheck" onclick="addSaveEmbeddedUrl()"
+                                               style="margin: 7px 10px; display: none"><span
+                                                    class="fas fa-check fa-sm"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-sm-4"><b>Work Phone</b></div>
+                                <div class="col-sm-1">:</div>
+                                <div class="col-sm-5">+1 123 456 7890</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-sm-4"><b>Email</b></div>
+                                <div class="col-sm-1">:</div>
+                                <div class="col-sm-5"><a
+                                        href="mailto:elon.musk@hackathon.com">elon.musk@hackathon.com</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-sm-4"><b>Enterprise login id</b></div>
+                                <div class="col-sm-1">:</div>
+                                <div class="col-sm-5">X999000</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col-sm-4"><b>Address</b></div>
+                                <div class="col-sm-1">:</div>
+                                <div class="col-sm-5">459 Carlton Creek<br>Palo Alto, CA 10001-2170</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-5 text-right">
+                    <a class="btn btn-danger btn-sm"
+                       onclick="playHighlightText()"
+                       style="box-shadow: 0 0 30px rgba(0,0,0,0.2)">Intelligent Play&nbsp;&nbsp;&nbsp;
+                        <span class="fa fa-play"></span>
+                    </a>
+                </div>
+            </div>
+            <h3>What is Lorem Ipsum?</h3>
+            <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
+                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
+                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap
+                into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the
+                release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
+                software like Aldus PageMaker including versions of Lorem Ipsum.
+            </p>
+            <h3>Where does it come from?</h3>
+            <p>
+                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical
+                Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at
+                Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a
+                Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the
+                undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et
+                Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the
+                theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor
+                sit amet..", comes from a line in section 1.10.32.
+                <br>
+                The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.
+                Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their
+                exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+            </p>
+        </div>
+    </div>
+    <label hidden id="selectedText"></label>
+    <audio hidden id="consoleStandard" onended="endPlayingConsole()"></audio>
+</div>
+
+
+{% endblock %}
