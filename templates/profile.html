@@ -167,8 +167,8 @@
                                 onchange="selectOnChange(this)"
                                 style="box-shadow: inset 0 0 15px rgb(0 0 0 / 15%); border-width: 0.5px">
                             <option selected="selected" value="en-US">--select a locale--</option>
-                            {% for locale in lang_codes %}
-                            <option value='{{locale}}'>{{locale}}</option>
+                            {% for code, name in lang_codes.items() %}
+                            <option value='{{code}}'>{{name}}</option>
                             {% endfor %}
                         </select>
                     </div>
