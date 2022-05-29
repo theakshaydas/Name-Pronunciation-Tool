@@ -1,89 +1,41 @@
 from __main__ import app
 
-from flask import session, url_for, redirect, render_template, request, abort, Response
+from flask import session, url_for, redirect, render_template, request, abort, Response, g, jsonify
 
+from gcp_tts_calls import list_languages, list_voices, list_genders, text_to_wav
 from main_tts_calls import *
 
+# from flask_oidc import OpenIDConnect
+# from okta import UsersClient
+
 app.config.from_object('config')
-language_options = {'af-ZA': {'FEMALE': []}, 'ar-XA': {'MALE': ['ar-XA-Wavenet-B', 'ar-XA-Wavenet-C'],
-                                                       'FEMALE': ['ar-XA-Wavenet-A', 'ar-XA-Wavenet-D']},
-                    'bg-BG': {'FEMALE': []}, 'bn-IN': {'MALE': ['bn-IN-Wavenet-B'], 'FEMALE': ['bn-IN-Wavenet-A']},
-                    'ca-ES': {'FEMALE': []}, 'cmn-CN': {'MALE': ['cmn-CN-Wavenet-B', 'cmn-CN-Wavenet-C'],
-                                                        'FEMALE': ['cmn-CN-Wavenet-A', 'cmn-CN-Wavenet-D']},
-                    'cmn-TW': {'MALE': ['cmn-TW-Wavenet-B', 'cmn-TW-Wavenet-C'], 'FEMALE': ['cmn-TW-Wavenet-A']},
-                    'cs-CZ': {'FEMALE': ['cs-CZ-Wavenet-A']}, 'da-DK': {'MALE': ['da-DK-Wavenet-C'],
-                                                                        'FEMALE': ['da-DK-Wavenet-A', 'da-DK-Wavenet-D',
-                                                                                   'da-DK-Wavenet-E']},
-                    'de-DE': {'MALE': ['de-DE-Wavenet-B', 'de-DE-Wavenet-D', 'de-DE-Wavenet-E'],
-                              'FEMALE': ['de-DE-Wavenet-A', 'de-DE-Wavenet-C', 'de-DE-Wavenet-F']},
-                    'el-GR': {'FEMALE': ['el-GR-Wavenet-A']}, 'en-AU': {'MALE': ['en-AU-Wavenet-B', 'en-AU-Wavenet-D'],
-                                                                        'FEMALE': ['en-AU-Wavenet-A',
-                                                                                   'en-AU-Wavenet-C']},
-                    'en-GB': {'MALE': ['en-GB-Wavenet-B', 'en-GB-Wavenet-D'],
-                              'FEMALE': ['en-GB-Wavenet-A', 'en-GB-Wavenet-C', 'en-GB-Wavenet-F']},
-                    'en-IN': {'MALE': ['en-IN-Wavenet-B', 'en-IN-Wavenet-C'],
-                              'FEMALE': ['en-IN-Wavenet-A', 'en-IN-Wavenet-D']}, 'en-US': {
-        'MALE': ['en-US-Wavenet-A', 'en-US-Wavenet-B', 'en-US-Wavenet-D', 'en-US-Wavenet-I', 'en-US-Wavenet-J'],
-        'FEMALE': ['en-US-Wavenet-C', 'en-US-Wavenet-E', 'en-US-Wavenet-F', 'en-US-Wavenet-G', 'en-US-Wavenet-H']},
-                    'es-ES': {'MALE': ['es-ES-Wavenet-B'], 'FEMALE': ['es-ES-Wavenet-C', 'es-ES-Wavenet-D']},
-                    'es-US': {'MALE': ['es-US-Wavenet-B', 'es-US-Wavenet-C'], 'FEMALE': ['es-US-Wavenet-A']},
-                    'fi-FI': {'FEMALE': ['fi-FI-Wavenet-A']},
-                    'fil-PH': {'MALE': ['fil-PH-Wavenet-C', 'fil-PH-Wavenet-D'],
-                               'FEMALE': ['fil-PH-Wavenet-A', 'fil-PH-Wavenet-B']},
-                    'fr-CA': {'MALE': ['fr-CA-Wavenet-B', 'fr-CA-Wavenet-D'],
-                              'FEMALE': ['fr-CA-Wavenet-A', 'fr-CA-Wavenet-C']},
-                    'fr-FR': {'MALE': ['fr-FR-Wavenet-B', 'fr-FR-Wavenet-D'],
-                              'FEMALE': ['fr-FR-Wavenet-A', 'fr-FR-Wavenet-C', 'fr-FR-Wavenet-E']},
-                    'gu-IN': {'MALE': ['gu-IN-Wavenet-B'], 'FEMALE': ['gu-IN-Wavenet-A']},
-                    'hi-IN': {'MALE': ['hi-IN-Wavenet-B', 'hi-IN-Wavenet-C'],
-                              'FEMALE': ['hi-IN-Wavenet-A', 'hi-IN-Wavenet-D']},
-                    'hu-HU': {'FEMALE': ['hu-HU-Wavenet-A']}, 'id-ID': {'MALE': ['id-ID-Wavenet-B', 'id-ID-Wavenet-C'],
-                                                                        'FEMALE': ['id-ID-Wavenet-A',
-                                                                                   'id-ID-Wavenet-D']},
-                    'is-IS': {'FEMALE': []}, 'it-IT': {'MALE': ['it-IT-Wavenet-C', 'it-IT-Wavenet-D'],
-                                                       'FEMALE': ['it-IT-Wavenet-A', 'it-IT-Wavenet-B']},
-                    'ja-JP': {'MALE': ['ja-JP-Wavenet-C', 'ja-JP-Wavenet-D'],
-                              'FEMALE': ['ja-JP-Wavenet-A', 'ja-JP-Wavenet-B']},
-                    'kn-IN': {'MALE': ['kn-IN-Wavenet-B'], 'FEMALE': ['kn-IN-Wavenet-A']},
-                    'ko-KR': {'MALE': ['ko-KR-Wavenet-C', 'ko-KR-Wavenet-D'],
-                              'FEMALE': ['ko-KR-Wavenet-A', 'ko-KR-Wavenet-B']}, 'lv-LV': {'MALE': []},
-                    'ml-IN': {'MALE': ['ml-IN-Wavenet-B'], 'FEMALE': ['ml-IN-Wavenet-A']},
-                    'ms-MY': {'MALE': ['ms-MY-Wavenet-B', 'ms-MY-Wavenet-D'],
-                              'FEMALE': ['ms-MY-Wavenet-A', 'ms-MY-Wavenet-C']},
-                    'nb-NO': {'MALE': ['nb-NO-Wavenet-B', 'nb-NO-Wavenet-D'],
-                              'FEMALE': ['nb-NO-Wavenet-A', 'nb-NO-Wavenet-C', 'nb-no-Wavenet-E']},
-                    'nl-BE': {'MALE': ['nl-BE-Wavenet-B'], 'FEMALE': ['nl-BE-Wavenet-A']},
-                    'nl-NL': {'MALE': ['nl-NL-Wavenet-B', 'nl-NL-Wavenet-C'],
-                              'FEMALE': ['nl-NL-Wavenet-A', 'nl-NL-Wavenet-D', 'nl-NL-Wavenet-E']},
-                    'pa-IN': {'MALE': ['pa-IN-Wavenet-B', 'pa-IN-Wavenet-D'],
-                              'FEMALE': ['pa-IN-Wavenet-A', 'pa-IN-Wavenet-C']},
-                    'pl-PL': {'MALE': ['pl-PL-Wavenet-B', 'pl-PL-Wavenet-C'],
-                              'FEMALE': ['pl-PL-Wavenet-A', 'pl-PL-Wavenet-D', 'pl-PL-Wavenet-E']},
-                    'pt-BR': {'MALE': ['pt-BR-Wavenet-B'], 'FEMALE': ['pt-BR-Wavenet-A']},
-                    'pt-PT': {'MALE': ['pt-PT-Wavenet-B', 'pt-PT-Wavenet-C'],
-                              'FEMALE': ['pt-PT-Wavenet-A', 'pt-PT-Wavenet-D']},
-                    'ro-RO': {'FEMALE': ['ro-RO-Wavenet-A']}, 'ru-RU': {'MALE': ['ru-RU-Wavenet-B', 'ru-RU-Wavenet-D'],
-                                                                        'FEMALE': ['ru-RU-Wavenet-A', 'ru-RU-Wavenet-C',
-                                                                                   'ru-RU-Wavenet-E']},
-                    'sk-SK': {'FEMALE': ['sk-SK-Wavenet-A']}, 'sr-RS': {'FEMALE': []},
-                    'sv-SE': {'MALE': ['sv-SE-Wavenet-C', 'sv-SE-Wavenet-E'],
-                              'FEMALE': ['sv-SE-Wavenet-A', 'sv-SE-Wavenet-B', 'sv-SE-Wavenet-D']},
-                    'ta-IN': {'MALE': ['ta-IN-Wavenet-B'], 'FEMALE': ['ta-IN-Wavenet-A']},
-                    'te-IN': {'MALE': [], 'FEMALE': []}, 'th-TH': {'FEMALE': []},
-                    'tr-TR': {'MALE': ['tr-TR-Wavenet-B', 'tr-TR-Wavenet-E'],
-                              'FEMALE': ['tr-TR-Wavenet-A', 'tr-TR-Wavenet-C', 'tr-TR-Wavenet-D']},
-                    'uk-UA': {'FEMALE': ['uk-UA-Wavenet-A']}, 'vi-VN': {'MALE': ['vi-VN-Wavenet-B', 'vi-VN-Wavenet-D'],
-                                                                        'FEMALE': ['vi-VN-Wavenet-A',
-                                                                                   'vi-VN-Wavenet-C']},
-                    'yue-HK': {'MALE': [], 'FEMALE': []}}
+
+
+# app.config["OIDC_CLIENT_SECRETS"] = "client_secrets.json"
+# app.config["OIDC_COOKIE_SECURE"] = False
+# app.config["OIDC_CALLBACK_ROUTE"] = "/oidc/callback"
+# app.config["OIDC_SCOPES"] = ["openid", "email", "profile"]
+# app.config["SECRET_KEY"] = "RGVlcCBDYWRlbmNlIC0gTmFtZSBQcm9udW5jaWF0aW9uIFRvb2w="
+# oidc = OpenIDConnect(app)
+# okta_client = UsersClient("dev-00396574.okta.com", "00rMlCM2_bu8ypbWn0hu0OYFrLCenIXI4ej0_wOI1J")
+#
+#
+# @app.before_request
+# def before_request():
+#     if oidc.user_loggedin:
+#         g.user = okta_client.get_user(oidc.user_getfield("sub"))
+#     else:
+#         g.user = None
 
 
 @app.route("/")
+# @oidc.require_login
 def func_root():
     return render_template("home.html")
 
 
 @app.route("/login", methods=["POST"])
+# @oidc.require_login
 def func_login():
     id_submitted = request.form.get("id")
     is_success, returned_name = authenticate(id_submitted, request.form.get("pw"))
@@ -101,7 +53,7 @@ def func_user():
         #                            for gender in list_genders(language_code=code)}
         #                     for code in list_languages()}
         user_profile = get_recording(session.get("current_user_email"))[0]
-        return render_template("profile.html", profile=user_profile, lang_options=language_options)
+        return render_template("profile.html", profile=user_profile, lang_codes=list_languages())
 
 
 @app.route("/logout/")
@@ -109,6 +61,24 @@ def func_logout():
     session.pop("current_user", None)
     session.pop("current_user_email", None)
     return redirect(url_for("func_root"))
+
+
+@app.route('/cascade_dropdown')
+def func_cascade_dropdown():
+    selected_locale = request.args.get('selected_locale', type=str)
+    selected_gender = request.args.get('selected_gender', type=str)
+    if not selected_gender:
+        optionshtml = '<option selected="selected" value="">--select a gender--</option>'
+        genders = list_genders(selected_locale)
+        for entry in genders:
+            optionshtml += '<option value="{}">{}</option>'.format(entry, entry)
+        return jsonify(options_html=optionshtml)
+    else:
+        optionshtml = '<option selected="selected" value="">--select a voice--</option>'
+        voices = list_voices(selected_locale, selected_gender)
+        for entry in voices:
+            optionshtml += '<option value="{}">{}</option>'.format(entry, entry)
+        return jsonify(options_html=optionshtml)
 
 
 @app.route("/user_lookup", methods=["POST", "GET"])
@@ -121,7 +91,7 @@ def func_user_lookup():
                            user_list,
                            [x.format(y['name'], y['email_id']) for x, y in
                             zip(["/api/pronounce?name={}&email={}"] * len(user_list), user_list)],
-                           [x.format(y['email_id'], y['name']) if y['is_saved'] else None
+                           [x.format(y['email_id'], _id) if y['is_saved'] else None
                             for x, y in zip(["/delete_saved_recording/{}/{}"] * len(user_list), user_list)])
             return render_template("home.html", users=user_tbl, is_emp=True)
         else:
@@ -130,25 +100,26 @@ def func_user_lookup():
 
 @app.route("/save_pref/", methods=['POST'])
 def func_save_preference():
+    name = session.get("current_user")
+    email = session.get("current_user_email")
     voice = request.form.get("search_voice")
     speed = request.form.get("ss")
     pitch = request.form.get("ps")
-    email = session.get("current_user_email")
-    alias = request.form.get('editPreferredName')
-    name = session.get("current_user")
-    print(name, email, voice, float(speed), float(pitch), alias)
-    save_preferences(name, email, voice, float(speed), float(pitch), preferred_name=alias)
+    pref_name = request.form.get('preferredName')
+    save_preferences(name, email, voice, float(speed), float(pitch), preferred_name=pref_name)
     return redirect(url_for("func_user"))
 
 
-@app.route("/save_rec/", methods=['POST'])
-@app.route("/save_rec/<alias>", methods=['POST'])
+@app.route("/save_rec/", methods=["POST"])
+@app.route("/save_rec/<alias>", methods=["POST"])
 def func_save_recording(alias=None):
     if request.data:
-        save_recordings(session.get("current_user"), session.get("current_user_email"), request.data, alias)
-        return Response(status=200)
+        audio_sample = text_to_wav(request.data.decode("utf-8")) if request.content_type.startswith(
+            "text") else request.data
+        save_recordings(session.get("current_user"), session.get("current_user_email"), audio_sample, alias)
     else:
         return Response(status=400)
+    return jsonify({"redirect": "/profile"})
 
 
 @app.route("/delete_saved_recording", methods=["POST", "GET"])
