@@ -130,3 +130,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Credentials
+name-pronounciation-tool-5503148f02ce.json
+postgres_authentication.json
