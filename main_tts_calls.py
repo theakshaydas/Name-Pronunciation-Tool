@@ -70,7 +70,7 @@ def personadd(name, email_id, password):
 
 
 # Preferences can be given to be saved required name, email_id,voice,speed,pitch and preferred name is optional if already present in db not overwritten with None if not provided dont worry.
-def save_preferences(name, email_id, voice, speed, pitch, preferred_name=None):
+def save_preferences(name, email_id, voice, speed, pitch, preferred_name=str()):
     if preferred_name:
         audio_file_byte = gcp_tts_calls.text_to_wav(preferred_name, voice, pitch, speed)
     else:
@@ -83,14 +83,13 @@ def save_preferences(name, email_id, voice, speed, pitch, preferred_name=None):
     upload_to_bucket(filename)
     os.remove(filename)
     result.audio = filename
-    if preferred_name:
-        result.preferred_name = preferred_name
+    result.preferred_name = preferred_name
     db.session.commit()
     return 0
 
 
 # The audio file should be given in bytes form and if preferred name is entered can be given as well else will be None if not already present in database. Required -- audio,name,email_id
-def save_recordings(name, email_id, audio_file, preferred_name=None):
+def save_recordings(name, email_id, audio_file, preferred_name=str()):
     result = People.query.filter_by(email_id=email_id).first()
     person_id = result.id
     filename = f"{person_id}.wav"
@@ -99,8 +98,7 @@ def save_recordings(name, email_id, audio_file, preferred_name=None):
     upload_to_bucket(filename)
     os.remove(filename)
     result.audio = filename
-    if preferred_name:
-        result.preferred_name = preferred_name
+    result.preferred_name = preferred_name
     db.session.commit()
     return 0
 

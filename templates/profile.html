@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="input-group input-group-sm">
-                                <input class="text-center" disabled form="saveform"
+                                <input class="text-center" disabled
                                        name="editPreferredName"
                                        placeholder="enter your preferred name"
                                        style="box-shadow: 0 0 10px rgba(0,0,0,0.1)"
@@ -75,7 +75,7 @@
                     <div class="col-sm-2"></div>
                     <div class="col-sm-8">
                         <div class="input-group input-group-sm">
-                            <input class="text-center" disabled form="saveform"
+                            <input class="text-center" disabled
                                    name="editPreferredName"
                                    placeholder="enter your preferred name"
                                    style="box-shadow: 0 0 10px rgba(0,0,0,0.1)"
@@ -98,7 +98,8 @@
                        style="box-shadow: 0 0 30px rgba(0,0,0,0.2)">Delete&nbsp;&nbsp;&nbsp;
                         <span class="fa fa-trash"></span>
                     </a>
-                    <a class="btn btn-sm btn-outline-danger" href="{{ url_for('func_delete_saved_recording') }}"
+                    <!--href="{{ url_for('func_delete_saved_recording') }}"-->
+                    <a class="btn btn-sm btn-outline-danger" href="/delete_user/{{profile.email_id}}"
                        name="opt_out"
                        style="box-shadow: 0 0 30px rgba(0,0,0,0.2)">Opt out
                         <span class="fa fa-sign-out"></span>
@@ -115,7 +116,7 @@
                         </div>
                         <div class="col-sm-6 text-right" id="uploadCustom" style="display: none">
                             <a class="btn btn-success btn-sm" name="upload_user_pronunciation"
-                               onclick="saveRecording()"
+                               onclick="saveRecording('{{profile.name}}')"
                                style="box-shadow: 0 0 30px rgba(0,0,0,0.2)">Upload&nbsp;&nbsp;&nbsp;
                                 <span class="fa fa-upload"></span>
                             </a>
@@ -163,10 +164,10 @@
                         <label>Language/Locale</label>
                         <br>
                         <select class="form-control" id="search_locale" name="search_locale"
-                                onchange="localeOnChange({{lang_options}})"
+                                onchange="selectOnChange(this)"
                                 style="box-shadow: inset 0 0 15px rgb(0 0 0 / 15%); border-width: 0.5px">
                             <option selected="selected" value="en-US">--select a locale--</option>
-                            {% for locale in lang_options.keys() %}
+                            {% for locale in lang_codes %}
                             <option value='{{locale}}'>{{locale}}</option>
                             {% endfor %}
                         </select>
@@ -175,7 +176,7 @@
                         <label>Gender</label>
                         <br>
                         <select class="form-control" id="search_gender" name="search_gender"
-                                onchange="genderOnChange({{lang_options}})"
+                                onchange="selectOnChange(this)"
                                 style="box-shadow: inset 0 0 15px rgb(0 0 0 / 15%)">
                             <option selected="selected" value="">--select a gender--</option>
                         </select>
@@ -183,7 +184,7 @@
                     <div class="col-lg-4 text-left" style="padding: 0 40px 0 40px; border-width: 0.5px">
                         <label>Voice</label>
                         <br>
-                        <select class="form-control" id="search_voice" name="search_voice"
+                        <select class="form-control" id="search_voice" name="search_voice" required
                                 style="box-shadow: inset 0 0 15px rgb(0 0 0 / 15%)">
                             <option selected="selected" value="">--select a voice--</option>
                         </select>
@@ -220,9 +221,8 @@
                         </a>
                     </div>
                     <div class="col-md-6 text-left">
-                        <button class="btn btn-warning btn-sm" id="save"
-                                style="box-shadow: 0 0 30px rgba(0,0,0,0.15)"
-                                type="submit">Save Preference&nbsp;&nbsp;&nbsp;
+                        <button class="btn btn-warning btn-sm" id="save" onclick="savePreference()"
+                                style="box-shadow: 0 0 30px rgba(0,0,0,0.15)">Save Preference&nbsp;&nbsp;&nbsp;
                             <span class="fa fa-save"></span>
                         </button>
                     </div>

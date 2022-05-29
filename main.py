@@ -10,5 +10,5 @@ import flask_app
 
 if __name__ == "__main__":
     # run_tests()
-    app.run(port=8080)
+    app.run(port=8080, debug=True)
 

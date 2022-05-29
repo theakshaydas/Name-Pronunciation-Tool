@@ -4,32 +4,23 @@ function copyToClipboard(item) {
 }
 
 //profile.html
-function localeOnChange(lang_options) {
-    var selLocale = document.getElementById('search_locale')
-    var selGender = document.getElementById('search_gender')
-    var selVoice = document.getElementById('search_voice')
-    selVoice.length = 1;
-    selGender.length = 1;
-    for (var y in lang_options[selLocale.value]) {
-        selGender.options[selGender.options.length] = new Option(y, y);
-    }
+function selectOnChange(ele) {
+    $.getJSON('/cascade_dropdown', {
+            selected_locale: $('#search_locale').val(),
+            selected_gender: (ele.id == 'search_gender') ? $('#search_gender').val() : null
+          }).done(function(data) {
+                ((ele.id == 'search_gender') ? $('#search_voice') : $('#search_gender')).html(data.options_html);
+           });
 }
-function genderOnChange(lang_options) {
-    var selLocale = document.getElementById('search_locale')
-    var selGender = document.getElementById('search_gender')
-    var selVoice = document.getElementById('search_voice')
-    selVoice.length = 1;
-    var z = lang_options[selLocale.value][selGender.value];
-    for (var i = 0; i < z.length; i++) {
-        selVoice.options[selVoice.options.length] = new Option(z[i], z[i]);
-    }
-}
+
 function showSpeedVal(value){
     document.getElementById('speedvalue').innerHTML = value;
 }
+
 function showPitchVal(value){
     document.getElementById('pitchvalue').innerHTML = value;
 }
+
 function editAlias() {
     alias = document.getElementsByName('editPreferredName')[0]
     if (alias.disabled == true) {
@@ -58,7 +49,7 @@ function playStandard(name) {
     if(voice.value != '') {
         var audio = document.querySelector('audio#standard');
         var nm = name;
-        alias = document.getElementsByName('editPreferredName')[0]
+        alias = document.getElementsByName('editPreferredName')[0];
         if (alias.value != "") {
             nm = alias.value;
         }
@@ -66,6 +57,15 @@ function playStandard(name) {
         audio.play();
     } else {
         alert("Select a voice")
+    }
+}
+
+function savePreference() {
+    lang_code = $('#search_voice').val();
+    if(lang_code !== "") {
+        var alias = document.getElementsByName('editPreferredName')[0];
+        $('#saveform').append('<input type="hidden" name="preferredName" value="' + alias.value + '" />');
+        $("#saveform").submit();
     }
 }
 
@@ -109,13 +109,29 @@ function toggleRecording(chkbox) {
     }
 }
 
-function saveRecording() {
+function saveRecording(fullName) {
     var alias = document.getElementsByName('editPreferredName')[0];
     var xmlhttp = new XMLHttpRequest();
     var url = "/save_rec/" + alias.value;
     xmlhttp.open("POST", url, true);
-    xmlhttp.setRequestHeader("Content-type", "audio/wav");
-    xmlhttp.send(recordingBlob);
+    if(recordingBlob.size == 0){
+        var name = alias.value || fullName;
+        xmlhttp.setRequestHeader("Content-type", "text/plain");
+        xmlhttp.send(name);
+    } else {
+        xmlhttp.setRequestHeader("Content-type", "audio/wav");
+        xmlhttp.send(recordingBlob);
+    }
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState === 4) {
+            var response = JSON.parse(xmlhttp.responseText);
+            if (xmlhttp.status === 200) {
+             window.location.href = response.redirect;
+            } else {
+             alert('Upload Failed');
+            }
+        }
+    }
 }
 
 function forbidRecording() {

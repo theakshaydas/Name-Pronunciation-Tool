@@ -53,7 +53,7 @@
             <th> {{ number }}</th>
             <td> {{ user.name }}</td>
             <td> {{ user.email_id }}</td>
-            <td> {{ user.preferred_name }}</td>
+            <td> {{ user.preferred_name or '' }}</td>
             <td class="text-center">
                 <audio class="in-grid" controls src="{{rec}}"></audio>
             </td>
