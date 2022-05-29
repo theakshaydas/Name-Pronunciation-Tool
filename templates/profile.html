@@ -109,7 +109,7 @@
                     <div class="collapse in" id="collapseUserPlayRecord">
                         <div class="col-sm-6 text-right" id="intPlay" style="display: block">
                             <a class="btn btn-danger btn-sm" name="play_user_pronunciation"
-                               onclick="playIntelligent(&quot;/api/pronounce?name={{profile.name}}&amp;email={{profile.email_id}}&quot;)"
+                               onclick="playIntelligent(&quot;/api/standard/pronounce?name={{profile.name}}&quot;)"
                                style="box-shadow: 0 0 30px rgba(0,0,0,0.2)">Intelligent Play&nbsp;&nbsp;&nbsp;
                                 <span class="fa fa-play"></span>
                             </a>
@@ -167,8 +167,8 @@
                                 onchange="selectOnChange(this)"
                                 style="box-shadow: inset 0 0 15px rgb(0 0 0 / 15%); border-width: 0.5px">
                             <option selected="selected" value="en-US">--select a locale--</option>
-                            {% for locale in lang_codes %}
-                            <option value='{{locale}}'>{{locale}}</option>
+                            {% for code, name in lang_codes.items() %}
+                            <option value='{{code}}'>{{name}}</option>
                             {% endfor %}
                         </select>
                     </div>

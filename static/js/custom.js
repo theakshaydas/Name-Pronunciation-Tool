@@ -31,10 +31,10 @@ function editAlias() {
 
 function playIntelligent(src) {
     alias = document.getElementsByName('editPreferredName')[0]
-    var regex = /(name=)(.*)(&email)/g;
+    var regex = /(name=)(.*)/g;
     var result = src;
     if (alias.value != "") {
-        result = src.replace(regex, `$1` + alias.value + `$3`);
+        result = src.replace(regex, `$1` + alias.value);
     }
     toggleAudioControl(true, false);
     var audio = document.querySelector('audio#record');
@@ -192,7 +192,7 @@ document.addEventListener('mouseup', event => {
 function playHighlightText() {
     var text = document.getElementById('selectedText').innerHTML;
     if (text.length) {
-        var url = "/api/pronounce?name=" + text;
+        var url = "/api/standard/pronounce?name=" + text;
         var audio = document.querySelector('audio#consoleStandard');
         audio.src = url;
         audio.play();

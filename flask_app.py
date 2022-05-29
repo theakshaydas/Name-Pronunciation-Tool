@@ -1,6 +1,6 @@
 from __main__ import app
 
-from flask import session, url_for, redirect, render_template, request, abort, Response, g, jsonify
+from flask import session, url_for, redirect, render_template, request, abort, Response, jsonify
 
 from gcp_tts_calls import list_languages, list_voices, list_genders, text_to_wav
 from main_tts_calls import *
@@ -53,7 +53,14 @@ def func_user():
         #                            for gender in list_genders(language_code=code)}
         #                     for code in list_languages()}
         user_profile = get_recording(session.get("current_user_email"))[0]
-        return render_template("profile.html", profile=user_profile, lang_codes=list_languages())
+        lang_code_lists = list_languages()
+        file = 'json/lang_code_name.json'
+        with open(file, 'r') as f:
+            name_dict = json.load(f)
+        lang_lists = {code: name_dict.get(code, f'Unknown ({code})') for code in lang_code_lists}
+        return render_template("profile.html",
+                               profile=user_profile,
+                               lang_codes=dict(sorted(lang_lists.items(), key=lambda item: item[1])))
 
 
 @app.route("/logout/")
