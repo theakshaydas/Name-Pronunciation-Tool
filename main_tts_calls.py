@@ -10,12 +10,12 @@ from flask_sqlalchemy import SQLAlchemy
 import gcp_tts_calls
 from __main__ import app
 
-f=open('name-pronounciation-tool-5503148f02ce.json')
-cred = json.load(f)
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(cred)
+# f=open('name-pronounciation-tool-5503148f02ce.json')
+# cred = json.load(f)
+# credentials = ServiceAccountCredentials.from_json_keyfile_dict(cred)
 
-f1=open('postgres_authentication.json')
-db_details=json.load(f1)
+# f1=open('postgres_authentication.json')
+db_details=json.loads(input("Postgres JSON: "))
 cloud_sql_instance_name = db_details['cloud_sql_instance_name']
 
 
@@ -27,7 +27,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 db = SQLAlchemy(app)
 
 bucket_name = 'custom_pronunciation'
-client = storage.Client(credentials=credentials, project='name-pronounciation-tool')
+# client = storage.Client(credentials=credentials, project='name-pronounciation-tool')
+client = storage.Client(project='name-pronounciation-tool')
 bucket = client.get_bucket(bucket_name)
 
 
