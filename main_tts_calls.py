@@ -1,6 +1,6 @@
 import sys
 import os
-import psycopg2
+# import psycopg2
 from sqlalchemy import create_engine, MetaData, Table, Column, Numeric, Integer, VARCHAR, func
 from gcloud import storage
 from oauth2client.service_account import ServiceAccountCredentials
