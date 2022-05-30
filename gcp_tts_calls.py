@@ -3,7 +3,7 @@
 import sys
 import os
 import google.cloud.texttospeech as tts
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="name-pronounciation-tool-5503148f02ce.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="name-pronounciation-tool-5503148f02ce.json"
 
 #Returns all list of unique languages given a voice
 def unique_languages_from_voices(voices):
