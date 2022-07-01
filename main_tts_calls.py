@@ -26,7 +26,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= True
 
 db = SQLAlchemy(app)
 
-bucket_name = 'custom_pronunciation'
+bucket_name = 'custom_audio'
 client = storage.Client(credentials=credentials, project='name-pronounciation-tool')
 # client = storage.Client(project='name-pronounciation-tool')
 bucket = client.get_bucket(bucket_name)

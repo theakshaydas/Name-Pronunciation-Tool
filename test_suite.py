@@ -42,7 +42,7 @@ class TestClass(unittest.TestCase):
         assert tester.get("/api/standard/pronounce?name=Karthik Peddi&voice=en-IN-Wavenet-B&speed=0.25&pitch=1.5").status_code == 200
         assert tester.get("/api/standard/pronounce?name=Karthik Peddi&voice=en-IN-Wavenet&speed=0.25&pitch=1.5").status_code == 400
         assert tester.get("/api/standard/pronounce?name=Karthik Peddi&voice=en-IN-Wavenet-B&speed=4.2&pitch=1.5").status_code == 400
-        assert tester.get("/api/standard/pronounce?name=Karthik Peddi&voice=en-IN-Wavenet-B&speed=0.25&pitch=3.0").status_code == 400
+        assert tester.get("/api/standard/pronounce?name=Karthik Peddi&voice=en-IN-Wavenet-X&speed=0.25&pitch=3.0").status_code == 400
         print("test_get_standard_recording() test successful!\n")
 
     def test_save_preferences(self):
@@ -50,7 +50,8 @@ class TestClass(unittest.TestCase):
         tester,name,email_id,password,voice,speed,pitch=app.test_client(self),"admin","admin@gmail.com","H@ckathon22","en-IN-Wavenet-B","2.0","0.5"
         invalid_email="admin@yahoo.com"
         invalid_speed="-0.2"
-        invalid_pitch="-3.0"
+        invalid_pitch="-23.0"
+        invalid_pass="Hello2321@"
         invalid_voice="Invalid voice_code"
         assert tester.put("/api/save_preferences",data=dict(
             name=name,email=email_id,password=password,voice=voice,speed=speed,pitch=pitch
@@ -67,6 +68,9 @@ class TestClass(unittest.TestCase):
         assert tester.put("/api/save_preferences",data=dict(
             name=name,email=email_id,password=password,voice=voice,speed=speed,pitch=invalid_pitch
         )).status_code == 400
+        assert tester.put("/api/save_preferences",data=dict(
+            name=name,email=email_id,password=invalid_pass,voice=voice,speed=speed,pitch=invalid_pitch
+        )).status_code == 401
         print("test_save_preferences() test successful!\n")
 
 def run_tests():
@@ -76,6 +80,5 @@ def run_tests():
     testclass.test_get_recording()
     testclass.test_get_standard_recording()
     testclass.test_save_preferences()
-    #testclass.test_save_recording()
     print("Executed 5/5 test all tests successful!")
 

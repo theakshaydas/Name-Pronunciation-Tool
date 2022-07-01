@@ -100,7 +100,7 @@ def save_preferences_api():
     if not fullmatch(regex,email_id):
         return "Bad Request: Enter a valid email id", status.HTTP_400_BAD_REQUEST
     password=request.form.get("password")
-    if not main_tts_calls.authenticate(email_id,password,name):
+    if not main_tts_calls.authenticate(email_id,password,name)[0]:
         return "Unauthorized: The entered email id or password or name is incorrect", status.HTTP_401_UNAUTHORIZED
     voice=request.form.get('voice')
     if voice not in list_all_voices():
@@ -132,7 +132,7 @@ def save_recording_api():
     if not fullmatch(regex,email_id):
         return "Bad Request: Enter a valid email id", status.HTTP_400_BAD_REQUEST
     password=request.form.get("password")
-    if not main_tts_calls.authenticate(email_id,password,name):
+    if not main_tts_calls.authenticate(email_id,password,name)[0]:
         return "Unauthorized: The entered email id or password or name is incorrect", status.HTTP_401_UNAUTHORIZED
     audio=request.files["recording"]
     audio.save(audio.filename)
@@ -156,7 +156,7 @@ def delete_custom_recording():
     if not fullmatch(regex,email_id):
         return "Bad Request: Enter a valid email id", status.HTTP_400_BAD_REQUEST
     password=request.form.get("password")
-    if not main_tts_calls.authenticate(email_id,password,name):
+    if not main_tts_calls.authenticate(email_id,password,name)[0]:
         return "Unauthorized: The entered email id or password or name is incorrect", status.HTTP_401_UNAUTHORIZED
     main_tts_calls.delete_recording(email_id)
     return "Successfully deleted custom_recording"
@@ -171,7 +171,7 @@ def delete_user():
     if not fullmatch(regex,email_id):
         return "Bad Request: Enter a valid email id", status.HTTP_400_BAD_REQUEST
     password=request.form.get("password")
-    if not main_tts_calls.authenticate(email_id,password,name):
+    if not main_tts_calls.authenticate(email_id,password,name)[0]:
         return "Unauthorized: The entered email id or password or name is incorrect", status.HTTP_401_UNAUTHORIZED
     if main_tts_calls.delete_user(email_id):
         return "Successfully opted-out from the service, if you want to opt in contact the administrator!"
@@ -201,7 +201,7 @@ def add_user():
     password=request.form.get('user_password')
     admin_email=request.form.get('admin_email').lower()
     admin_password=request.form.get('admin_password')
-    if main_tts_calls.authenticate(admin_email,admin_password):
+    if main_tts_calls.authenticate(admin_email,admin_password)[0]:
         if main_tts_calls.check_user_presence(email_id):
             return "Bad Request: The given user is already present!", status.HTTP_400_BAD_REQUEST
         main_tts_calls.personadd(name,email_id,password)
