@@ -54,6 +54,7 @@ from locale_detection import detect_language
 def text_to_wav(text,voice_name=None,pitch=0,speed=1):
     if voice_name is None:
         locale = name_to_locale(text)
+        print(f"Detected locale for {text}: {locale}")
         gender=list_genders(locale)[0]
         voice_names=list_voices(locale,gender)
         voice_name = voice_names[0] if len(voice_names) else "en-US-Wavenet-A"
