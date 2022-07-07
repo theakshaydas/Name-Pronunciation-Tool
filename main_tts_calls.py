@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 import gcp_tts_calls
 from __main__ import app
 
-f=open('name-pronounciation-tool-5503148f02ce.json')
+f=open('involuted-ratio-349909-e81ee1f59eab.json')
 cred = json.load(f)
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(cred)
 

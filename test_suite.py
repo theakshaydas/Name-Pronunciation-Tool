@@ -29,7 +29,7 @@ class TestClass(unittest.TestCase):
         print("Executing test_get_recording()..")
         tester=app.test_client(self)
         assert tester.get("/api/pronounce?name=admin").status_code == 200
-        assert tester.get("/api/pronounce?name=zxycty").status_code == 200
+        assert tester.get("/api/pronounce?name=习近平").status_code == 200
         assert tester.get("/api/pronounce?name=admin&email=admin@gmail.com").status_code == 200
         assert tester.get("/api/pronounce?name=admin&email=admin@yahoo.com").status_code == 400
         assert tester.get("/api/pronounce?name=admin&email=admin@gmail").status_code == 400

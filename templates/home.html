@@ -81,13 +81,13 @@
         <span>
             <a id="myTooltip1" onclick="copyToClipboard(this)" style="margin: 7px 10px"
                title="&lt;audio autoplay class=&quot;out-grid&quot; controls
-               src=&quot;/api/standard/pronounce?name='{{users}}'&quot;&gt;&lt;/audio&gt;"><span
+               src=&quot;/api/standard/pronounce?name={{users}}&quot;&gt;&lt;/audio&gt;"><span
                     class="fas fa-copy fa-lg"></span></a>
         </span>
     </h4>
     <br>
     <audio autoplay class="out-grid" controls
-           src="/api/standard/pronounce?name='{{users}}'"></audio>
+           src="/api/standard/pronounce?name={{users}}"></audio>
     {% endif %}
     {% endif %}
 </div>
