@@ -1,0 +1,58 @@
+summary: "Save Custom Standard Pronunciation Preferences"
+description: "The following API PUT request saves the preferences that the user prefers if the output of /standard/pronounce is to his/her liking. The user can alternatively input an optional param called preferred name (if he pronounces so in the audio). The following request overrides the existing recording if any."
+consumes:
+- "multipart/form-data"
+produces:
+- "text/plain"
+parameters:
+- in: "formData"
+  name: "name"
+  description: "Should be of length less than 30 characters"
+  required: "true"
+  type: "string"
+  value: "Chaitanya Rai"
+- in: "formData"
+  name: "email"
+  description: "Should be a valid user email address"
+  required: "true"
+  type: "string"
+  value: "Chaitanya.Rai@gmail.com"
+- in: "formData"
+  name: "password"
+  description: "Should be a valid password with length <30 and other characteristics described in Error codes"
+  required: "true"
+  type: "string"
+  value: "Chaitanya@22"
+  format: "password"
+- in: "formData"
+  name: "voice"
+  description: "Should be a valid voice from /api/get_voices"
+  required: "true"
+  type: "string"
+  value: "en-US-Wavenet-B"
+- in: "formData"
+  name: "pitch"
+  description: "Should be a float in the range [-20.0 , 20.0] (Inclusive)"
+  type: "float"
+  value: 0.0
+- in: "formData"
+  name: "speed"
+  description: "Should be a float in the range [0.25,4.0] (Inclusive)"
+  type: "float"
+  value: 1.0
+- in: "formData"
+  name: "preferred_name"
+  description: "Should be of length less than 30 characters"
+  type: "string"
+  value: "Chintu"
+
+responses:
+  201:
+    description: "Successfully saved preferences!"
+    type: "string"
+  400:
+    description: "Bad Request: One/many of compulsory fields (Name,email,voice,password) is not given"
+    type: "string"
+  401:
+    description: "Unauthorized: The entered email id or password or name is incorrect"
+    type: "string"

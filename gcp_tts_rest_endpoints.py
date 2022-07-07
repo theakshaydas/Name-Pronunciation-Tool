@@ -4,12 +4,16 @@ from flask import request , Response, jsonify
 from flask_restful import Resource, Api
 from flask_api import status
 from re import fullmatch
+from flasgger import Swagger, swag_from
 
 from __main__ import app
 from gcp_tts_calls import *
 import main_tts_calls
 
+swagger = Swagger(app)
+
 @app.route("/api/standard/pronounce",methods=['GET'])
+@swag_from('static/swagger_docs/get_standard_recording_api.yaml')
 def get_standard_recording_api():
     if "name" not in request.args:
         return "Bad Request: Name field not given", status.HTTP_400_BAD_REQUEST
@@ -26,7 +30,7 @@ def get_standard_recording_api():
             if pitch<-20.0 or pitch >20.0:
                 raise Exception("Not in range")
         except:
-            return "Bad Request: Enter a valid pitch value [-2.0,2.0]", status.HTTP_400_BAD_REQUEST
+            return "Bad Request: Enter a valid pitch value [-20.0,20.0]", status.HTTP_400_BAD_REQUEST
     if "speed" in request.args:
         try:
             speed=float(request.args.get('speed'))
@@ -38,6 +42,7 @@ def get_standard_recording_api():
     return Response(text_to_wav(name,voice_name,pitch,speed),mimetype="audio/wav")
 
 @app.route("/api/pronounce",methods=['GET'])
+@swag_from('static/swagger_docs/get_recording_api.yaml')
 def get_recording_api():
     if "name" not in request.args:
         return "Bad Request: Name field not given", status.HTTP_400_BAD_REQUEST
@@ -73,10 +78,12 @@ def get_recording_api():
         return Response(text_to_wav(name),mimetype="audio/wav")
 
 @app.route("/api/get_language_codes",methods=['GET'])
+@swag_from('static/swagger_docs/get_languages_api.yaml')
 def get_languages_api():
     return jsonify({'language_codes':list_languages()})
 
 @app.route("/api/get_voices",methods=['GET'])
+@swag_from('static/swagger_docs/get_voices_api.yaml')
 def get_voices_api():
     if "language_code" not in request.args:
         return jsonify({'voices':[list_all_voices()]})
@@ -91,6 +98,7 @@ def get_voices_api():
     return jsonify({'voices':list_voices(language,gender)})
 
 @app.route("/api/save_preferences",methods=['PUT'])
+@swag_from('static/swagger_docs/save_preferences_api.yaml')
 def save_preferences_api():
     if "name" not in request.form or "email" not in request.form or "voice" not in request.form or "password" not in request.form:
         return "Bad Request: One/many of compulsory fields (Name,email,voice,password) is not given", status.HTTP_400_BAD_REQUEST
@@ -123,6 +131,7 @@ def save_preferences_api():
 
 
 @app.route("/api/save_custom_recording",methods=['PUT'])
+@swag_from('static/swagger_docs/save_recording_api.yaml')
 def save_recording_api():
     if "name" not in request.form or "email" not in request.form or "password" not in request.form or "recording" not in request.files:
         return "Bad Request: One/many of compulsory fields (Name,email,password,audio file) is not given", status.HTTP_400_BAD_REQUEST
@@ -147,6 +156,7 @@ def save_recording_api():
             return "Successfully saved custom recording!", status.HTTP_200_OK
 
 @app.route("/api/delete_custom_recording",methods=['DELETE'])
+@swag_from('static/swagger_docs/delete_custom_recording.yaml')
 def delete_custom_recording():
     if "name" not in request.form or "email" not in request.form or "password" not in request.form:
         return "Bad Request: One/many of compulsory fields (Name,email,password,audio file) is not given", status.HTTP_400_BAD_REQUEST
@@ -162,6 +172,7 @@ def delete_custom_recording():
     return "Successfully deleted custom_recording"
 
 @app.route('/api/opt_out',methods=['DELETE'])
+@swag_from('static/swagger_docs/delete_user.yaml')
 def delete_user():
     if "name" not in request.form or "email" not in request.form or "password" not in request.form:
         return "Bad Request: One/many of compulsory fields (Name,email,password,audio file) is not given", status.HTTP_400_BAD_REQUEST
@@ -178,6 +189,7 @@ def delete_user():
 
 #Only for ADMIN
 @app.route("/api/get_embed_code",methods=['POST'])
+@swag_from('static/swagger_docs/get_embed_url.yaml')
 def get_embed_url():
     if "name" not in request.form or "admin_email" not in request.form or "admin_password" not in request.form:
         return "Bad Request: One/many of compulsory fields (Name,admin_email,admin_password) is not given", status.HTTP_400_BAD_REQUEST
@@ -185,14 +197,18 @@ def get_embed_url():
     admin_email_id=request.form.get('admin_email').lower()
     admin_password=request.form.get('admin_password')
     user_email_id=request.form.get('user_email')
-    if user_email_id:
-        user_email_id=user_email_id.lower()
-        return f"<audio controls src=\"http://localhost:8080/api/pronounce?name='{name}'&email='{user_email_id}'\"></audio>"
+    if main_tts_calls.authenticate(admin_email_id, admin_password)[0]:
+        if user_email_id:
+            user_email_id=user_email_id.lower()
+            return f"<audio controls src=\"http://localhost:8080/api/pronounce?name='{name}'&email='{user_email_id}'\"></audio>"
+        else:
+            return f"<audio controls src=\"http://localhost:8080/api/pronounce?name='{name}'\"></audio>"
     else:
-        return f"<audio controls src=\"http://localhost:8080/api/pronounce?name='{name}'\"></audio>"
+        return "Unauthorized: The entered admin email id or password is incorrect", status.HTTP_401_UNAUTHORIZED
 
 #Only for ADMIN ( INTERNAL USE ONLY )
 @app.route("/api/add_user",methods=['PUT'])
+@swag_from('static/swagger_docs/add_user.yaml')
 def add_user():
     if "user_name" not in request.form or "admin_email" not in request.form or "admin_password" not in request.form or 'user_email' not in request.form or 'user_password' not in request.form:
         return "Bad Request: One/many of compulsory fields (Name,admin_email,admin_password,user_email,user_password) is not given", status.HTTP_400_BAD_REQUEST

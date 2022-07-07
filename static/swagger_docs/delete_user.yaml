@@ -1,0 +1,38 @@
+summary: "Opt-Out From Service"
+description: "The following API DELETE request enables the user to opt-out from the name pronunciation service entirely. If the user decides to re-register as a Wells Fargo employee again in the future he has to contact the administrator."
+consumes:
+- "multipart/form-data"
+produces:
+- "text/plain"
+
+parameters:
+- in: "formData"
+  name: "name"
+  description: "Should be of length less than 30 characters"
+  required: "true"
+  type: "string"
+  value: "Vijay Lather"
+- in: "formData"
+  name: "email"
+  description: "Should be a valid user email address"
+  required: "true"
+  type: "string"
+  value: "Vijay.Lather@gmail.com"
+- in: "formData"
+  name: "password"
+  description: "Should be a valid password with length <30 and other characteristics described in Error codes"
+  required: "true"
+  type: "string"
+  value: "Vijay@22"
+  format: "password"
+
+responses:
+  201:
+    description: "Successfully opted-out from the service, if you want to opt in contact the administrator!"
+    type: "string"
+  400:
+    description: "Bad Request: One/many of compulsory fields (Name,email,password,audio file) is not given"
+    type: "string"
+  401:
+    description: "Unauthorized: The entered email id or password or name is incorrect"
+    type: "string"

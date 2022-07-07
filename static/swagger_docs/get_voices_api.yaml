@@ -1,0 +1,26 @@
+summary: "Get Voices Supported"
+description: "The following API GET request returns a list of voices supported by our text-to-speech model. If the optional parameters are not provided it returns all the voices supported."
+produces:
+- "application/json"
+parameters:
+- in: "query"
+  name: "language_code"
+  description: "This parameter should be one of /api/get_language_codes"
+  type: "string"
+  value: "en-US"
+- in: "query"
+  name: "gender"
+  description: "This can be provided only with language_code and should be one of MALE or FEMALE"
+  type: "string"
+  value: "MALE"
+
+responses:
+  200:
+    description: "List of available voice samples"
+    schema:
+      type: "object"
+      properties:
+        voices:
+          type: "array"
+          items:
+            type: "string"

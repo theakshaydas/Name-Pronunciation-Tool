@@ -1,0 +1,34 @@
+summary: "Get Custom Standard Pronunciation"
+description: "The following API GET request returns the standard pronunciation devised by our application's text-to-speech model given a name. User can select from a range of voices present in /api/get_voices and even modify the pitch and speed of the output by using the params voice, pitch, speed."
+produces:
+- "audio/wav"
+parameters:
+- in: "query"
+  name: "name"
+  description: "Should be of length less than 30 characters"
+  type: "string"
+  required: "true"
+  value: "Akshay Kumar Das"
+- in: "query"
+  name: "voice"
+  description: "Should be one of /api/get_voices"
+  type: "string"
+  value: "en-US-Wavenet-A"
+- in: "query"
+  name: "pitch"
+  description: "Should be a float in the range [-20.0 , 20.0] (Inclusive)"
+  type: "float"
+  value: 0.0
+- in: "query"
+  name: "speed"
+  description: "Should be a float in the range [0.25,4.0] (Inclusive)"
+  type: "float"
+  value: 1.0
+
+responses:
+  200:
+    description: "Audio file for the name sought pronunciation for"
+    type: "audio/wav"
+  400:
+    description: "Bad Request: Enter a valid voice name/valid pitch/valid speed"
+    type: "string"

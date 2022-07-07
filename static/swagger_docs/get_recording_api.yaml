@@ -1,0 +1,34 @@
+summary: "Get Pronunciation"
+description: "The following API GET request returns the user the recording of the given name, if the given name has a custom recording saved it will return the custom recoding. If there are multiple users with different custom recordings for a given name; A list of users with their names, email_ids and preferred_names are returned. Then providing the chosen 'email' as a param to the request along with the 'name'. The custom recording of that specific user is returned"
+parameters:
+- in: "query"
+  name: "name"
+  description: "Should be of length less than 30 characters"
+  required: "true"
+  type: "string"
+  value: "Shreyas V"
+- in: "query"
+  name: "user_email"
+  description: "Should be a valid user email address"
+  type: "string"
+  value: "Shreyas.V@gmail.com"
+
+responses:
+  200:
+    description: "Returns the pronunciation audio if user search returns only one result OR json if multiple."
+    schema:
+      type: "object"
+      properties:
+        listed_users:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              email_id:
+                type: "string"
+              is_saved:
+                type: "string"
+              name:
+                type: "string"
+              preferred_name:
+                type: "string"

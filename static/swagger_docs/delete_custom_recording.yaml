@@ -1,0 +1,37 @@
+summary: "Delete Custom Recording / Pronunciation"
+description: "The following API DELETE request enables the user to delete his custom recording / preferences if he later decides that the default standard pronunciation was fine."
+consumes:
+- "multipart/form-data"
+produces:
+- "text/plain"
+parameters:
+- in: "formData"
+  name: "name"
+  description: "Should be of length less than 30 characters"
+  required: "true"
+  type: "string"
+  value: "Chaitanya Rai"
+- in: "formData"
+  name: "email"
+  description: "Should be a valid user email address"
+  required: "true"
+  type: "string"
+  value: "Chaitanya.Rai@gmail.com"
+- in: "formData"
+  name: "password"
+  description: "Should be a valid password with length <30 and other characteristics described in Error codes"
+  required: "true"
+  type: "string"
+  value: "Chaitanya@22"
+  format: "password"
+
+responses:
+  201:
+    description: "Successfully deleted custom_recording"
+    type: "string"
+  400:
+    description: "Bad Request: One/many of compulsory fields (Name,email,password,audio file) is not given"
+    type: "string"
+  401:
+    description: "Unauthorized: The entered email id or password or name is incorrect"
+    type: "string"

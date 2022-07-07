@@ -1,0 +1,13 @@
+summary: "Get Language Codes Supported"
+description: "The following API GET request returns a list of language_codes our text-to-speech model supports. This doesn't require any input parameters"
+
+responses:
+  200:
+    description: "Returns available language codes"
+    schema:
+      type: "object"
+      properties:
+        language_codes:
+          type: "array"
+          items:
+            type: "string"

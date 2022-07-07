@@ -1,0 +1,37 @@
+summary: "Admin Only - Get Embeed Code"
+description: "The following API GET request is only to be used by the admin and won't work without the admin credentials. This enables the admin gets the embed code of a particular user. This embed code is an html tag which contains the public access URI in its source field and when used in any website will add a playable audio file which can be played by users to listen to the custom recording of that user. This can be used in websites like teamweorks.wellsfargo.com where beside the name field of a user this embed code can be added to generate a clickable audio file of his/her pronunciation."
+consumes:
+- "multipart/form-data"
+parameters:
+- in: "formData"
+  name: "name"
+  description: "Should be less than 30 characters"
+  required: "true"
+  type: "string"
+  value: "Joe Biden"
+- in: "formData"
+  name: "user_email"
+  description: "Should be a valid user email id stored in the database"
+  type: "string"
+- in: "formData"
+  name: "admin_email"
+  description: "Should be a valid admin email address"
+  required: "true"
+  type: "string"
+  value: "admin@gmail.com"
+- in: "formData"
+  name: "admin_password"
+  description: "Should be valid admin password with length<30 and match the credentials of the admin email entered"
+  required: "true"
+  type: "string"
+  value: "H@ckathon22"
+  format: "password"
+
+responses:
+  200:
+    description: "HTML Audio tag for the input string"
+    schema:
+      type: "text/html"
+  401:
+    description: "Unauthorized: The entered admin email id or password is incorrect"
+    type: "string"
